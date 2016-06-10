@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by citruseel on 5/22/2016.
@@ -14,6 +16,8 @@ public class Thunder2016Auto extends LinearOpMode{
     //Declaring the motors!
     DcMotor motorL; //Left Motor
     DcMotor motorR; //Right Motor
+    Servo servo;//arm servo
+    double servoposition = 0;//arms start in robot
 
 
     public void runOpMode() throws InterruptedException
@@ -23,26 +27,34 @@ public class Thunder2016Auto extends LinearOpMode{
         //Initiating motors!
         motorL = hardwareMap.dcMotor.get("L");
         motorR = hardwareMap.dcMotor.get("R");
+        servo = hardwareMap.servo.get("servo");
 
         //set channel mode?
         motorL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
         //Reverses the right motor
-        motorL.setDirection(DcMotor.Direction.REVERSE);
+        motorR.setDirection(DcMotor.Direction.REVERSE);
+
+
+        servoposition= Range.clip(servoposition, 0, 1);//range of servo values is between 0 and 1
+
 
         //"Wait for game to start"
         waitForStart();
 
         //Commence the autonomous!
         //Paste
+
         MoveForwardTime(1,3000);
         TurnRightTime(1,5000);
         TurnLeftTime(1, 5000);
         MoveBackwardTime(1, 3000);
+        ArmMove(0.5);
+        ArmMove(ArmStart);
 
     }
-
+    double ArmStart = 0;
 
     //Do "public void [methodName]" to create another another one (method/function)! ^_^
     //The variable "long" indicates that the time will be in milliseconds (i.e. long 1000 = 1 second)
@@ -95,6 +107,9 @@ public class Thunder2016Auto extends LinearOpMode{
         MoveForward(0);
     }
 
-
+    public void ArmMove(double servoposition)
+    {
+       servo.setPosition(servoposition);
+    }
 
 }
